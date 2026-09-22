@@ -1,13 +1,13 @@
 import { products } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 
-export default function Home() {
+export default function ProductsPage() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Termékeink</h1>
+        <h1 className="text-3xl font-bold mb-2">Minden termék</h1>
         <p className="text-muted-foreground">
-          Válogass a legújabb termékeink közül
+          {products.length} termék érhető el
         </p>
       </div>
 
