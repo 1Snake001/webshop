@@ -147,10 +147,12 @@ export default function CartPage() {
               <span>Összesen</span>
               <span>{formatPrice(totalPrice)}</span>
             </div>
-            <Button size="lg" className="w-full">
-              Tovább a fizetéshez
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
+            <Link href="/checkout" className="block">
+              <Button size="lg" className="w-full">
+                Tovább a fizetéshez
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
             <Link href="/products" className="block">
               <Button variant="outline" className="w-full">
                 Vásárlás folytatása
