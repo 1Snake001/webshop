@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model Order {
+  id          String   @id @default(cuid())
+  orderNumber String   @unique
+  createdAt   DateTime @default(now())
+
+  // Customer adatok (beágyazva)
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  address    String
+  city       String
+  postalCode String
+  notes      String?
+
+  // Fizetés
+  paymentMethod String
+  totalPrice    Int
+
+  // Kapcsolat
+  items OrderItem[]
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Termék pillanatkép (nem FK, mert a termék később változhat)
+  productId    String
+  productName  String
+  productSlug  String
+  productImage String
+  price        Int
+  quantity     Int
+
+  @@index([orderId])
+}
