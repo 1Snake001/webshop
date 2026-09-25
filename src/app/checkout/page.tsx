@@ -55,27 +55,61 @@ export default function CheckoutPage() {
     );
   }
 
-  const onSubmit = (data: CheckoutFormData) => {
-    // Rendelés "mentése"
-    const order = {
-      id: `ORD-${Date.now()}`,
-      items,
-      customer: data,
-      paymentMethod,
-      totalPrice,
-      createdAt: new Date().toISOString(),
-    };
+ const onSubmit = async (data: CheckoutFormData) => {
+  try {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        customer: data,
+        items: items.map((item) => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          productSlug: item.product.slug,
+          productImage: item.product.image,
+          price: item.product.price,
+          quantity: item.quantity,
+        })),
+        paymentMethod,
+        totalPrice,
+      }),
+    });
 
-    // localStorage-ba mentjük (mock)
-    localStorage.setItem("lastOrder", JSON.stringify(order));
-    console.log("📦 Rendelés leadva:", order);
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("API hiba:", result);
+      alert("Hiba történt a rendelés mentésekor. Próbáld újra!");
+      return;
+    }
+
+    console.log("✅ Rendelés mentve:", result);
+
+    // Mentjük localStorage-ba is (a success oldalhoz)
+    localStorage.setItem(
+      "lastOrder",
+      JSON.stringify({
+        id: result.orderNumber,
+        items,
+        customer: data,
+        paymentMethod,
+        totalPrice,
+        createdAt: new Date().toISOString(),
+      })
+    );
 
     // Kosár törlése
     clearCart();
 
     // Átirányítás a success oldalra
     router.push("/checkout/success");
-  };
+  } catch (error) {
+    console.error("Hiba:", error);
+    alert("Hiba történt a rendelés mentésekor. Próbáld újra!");
+  }
+};
 
   return (
     <main className="container mx-auto px-4 py-8">
