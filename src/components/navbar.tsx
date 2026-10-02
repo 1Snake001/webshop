@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useCart } from "@/store/cart";
+import { UserMenu } from "@/components/auth/user-menu";
 
 export function Navbar() {
   const [mounted, setMounted] = useState(false);
@@ -88,18 +89,21 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Kosár */}
-        <Link href="/cart">
-          <Button variant="outline" size="sm" className="relative">
-            <ShoppingCart className="h-4 w-4" />
-            <span className="ml-2 hidden sm:inline">Kosár</span>
-            {mounted && totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 h-5 min-w-[20px] px-1.5 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </Button>
-        </Link>
+        {/* Jobb oldal: user menü + kosár */}
+        <div className="flex items-center gap-2">
+          <UserMenu />
+          <Link href="/cart">
+            <Button variant="outline" size="sm" className="relative">
+              <ShoppingCart className="h-4 w-4" />
+              <span className="ml-2 hidden sm:inline">Kosár</span>
+              {mounted && totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 h-5 min-w-[20px] px-1.5 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Button>
+          </Link>
+        </div>
       </div>
     </header>
   );
