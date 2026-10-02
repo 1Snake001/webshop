@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 // Validációs séma
 const orderSchema = z.object({
@@ -37,6 +38,10 @@ export async function POST(request: Request) {
     // Validáció
     const validated = orderSchema.parse(body);
 
+    // Bejelentkezett user lekérdezése (opcionális)
+    const session = await auth();
+    const userId = session?.user?.id || null;
+
     // Rendelésszám generálás
     const orderNumber = `ORD-${Date.now()}`;
 
@@ -44,6 +49,7 @@ export async function POST(request: Request) {
     const order = await prisma.order.create({
       data: {
         orderNumber,
+        userId,
         firstName: validated.customer.firstName,
         lastName: validated.customer.lastName,
         email: validated.customer.email,
